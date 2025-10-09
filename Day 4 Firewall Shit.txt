@@ -1,0 +1,210 @@
+config t
+no access-list 1
+access-list 1 DENY 66.254.0.0 0.0.255.255
+access-list 1 deny 161.49.0.0 0.0.255.255
+access-list 1 DENY 104.21.0.0 0.0.255.255
+access-list 1 DENY 68.235.0.0 0.0.255.255
+access-list 1 DENY 104.17.0.0 0.0.255.255
+access-list 1 DENY 88.208.0.0 0.0.255.255
+access-list 1 DENY 208.77.0.0 0.0.255.255
+access-list 1 DENY 172.67.0.0 0.0.255.255
+access-list 1 Permit Any
+Int Gi 1
+ ip access-group NOPORN in
+end
+
+UNLOCK THE ACCESS-LIST:
+config t
+Int Gi 1
+ no ip access-group NOPORN in
+end
+
+ping www.dlsu.edu.ph 172.67.14.0   104.22.36.0
+ping www.ccp.edu.ph 50.6.160.0     
+ping www.feu.edu.ph 184.168.125.0  
+ping  www.ue.edu.ph 155.137.92.0  
+ping  www.mcl.edu.ph = 104.18.17.113
+
+
+config t
+NO ip access-list standard NOISKUL
+ip access-list standard NOISKUL
+DENY   172.67.0.0   0.0.255.255
+DENY   172.66.0.0   0.0.255.255
+DENY   50.6.0.0   0.0.255.255
+DENY   184.168.0.0   0.0.255.255
+DENY   155.137.0.0   0.0.255.255
+DENY   104.18.0.0   0.0.255.255
+Permit Any
+Int Gi 1
+ ip access-group NOISKUL in
+end
+
+
+YOUR COMPANY IS HAS VERY LOW INTERNET SPEED, BEC OF TORRENTS:
+www.thepiratebay.org   162.159.   104.21
+www.limetorrents.com    172.67.   84.32   104.21.
+www.freeanimeonline.com   76.223.  13.248
+www.torlock2.com   104.21.
+www.hentaisites.com 104.21.   
+www.iptorrents.com  104.26.   95.211.
+
+config t
+NO ip access-list standard NOTORS
+ip access-list standard NOTORS
+DENY   162.159.0.0 0.0.255.255
+DENY   104.21.0.0 0.0.255.255
+DENY   172.67.0.0 0.0.255.255
+DENY   84.32.0.0 0.0.255.255
+DENY   76.223.0.0 0.0.255.255
+DENY   13.248.0.0 0.0.255.255
+DENY   104.26.0.0 0.0.255.255
+DENY   95.211.0.0 0.0.255.255
+Permit Any
+Int Gi 1
+ ip access-group NOTORS in
+end
+
+
+
+HOW AN INTERNET HACK/ATTACK HAPPENS:
+SOURCE/HACKER 					DESTI/VICTIM
+
+
+
+TASK 1: CREATE YOUR OWN FIREWALL POLICY:
+MAGIC formula: 		Protocol 		Hacker Victim Port:
+	permit/deny icmp,tcp,udp,ip 		Any:0.0.0.0 web10,11
+Create a  firewall policy: FP1 conditions:
+bet10.com open ping,http,https = 3 lines
+bet11.com open ssh,dns,htps = 3 lines === 6 lines total:
+
+conf t
+no ip access-list extended FP1
+ip access-list extended FP1
+permit icmp any host bet10.com
+permit tcp any host bet10.com eq 80
+permit tcp any host bet10.com eq 443
+permit tcp any host bet11.com eq 22
+permit tcp any host bet11.com eq 53
+permit tcp any host bet11.com eq 443
+Int gi3
+description DMZzone
+IP access-group FP1 in
+
+
+
+--
+
+
+conf t
+no ip host www.bet10.com 192.168.103.10
+no ip host www.bet11.com 192.168.103.11
+no ip host www.web310.com 192.168.103.10
+no ip host www.web311.com 192.168.103.11
+ip host bet10.com 192.168.103.10
+ip host bet11.com 192.168.103.11
+end
+
+--
+
+TASK 2: CREATE YOUR OWN FIREWALL POLICY:
+MAGIC formula: 		Protocol 		Hacker Victim Port:
+	permit/deny icmp,tcp,udp,ip 		Any:0.0.0.0 web10,11
+Create a  firewall policy: FP2 conditions:
+bet10.com open SSH,DNS,HTTP,HTTPSping 
+bet11.com(voipServer) open h323,sccp,sip,sipTLS == 8 lines
+
+conf t
+no ip access-list extended FP2
+ip access-list extended FP2
+permit tcp any host bet10.com eq 22
+permit tcp any host bet10.com eq 53
+permit tcp any host bet10.com eq 80
+permit tcp any host bet10.com eq 443
+permit tcp any host bet11.com eq 1720
+permit tcp any host bet11.com eq 2000
+permit tcp any host bet11.com eq 5060
+permit tcp any host bet11.com eq 5061
+int gi 3
+ip access-group fp2 in
+end
+
+
+
+
+
+TASK 3: CREATE YOUR OWN FIREWALL POLICY:
+Create a  firewall policy: FP3 conditions:
+bet10.com open dns,https,sccp,sip
+bet11.com open ssh,http,h323,sipTLS == 8 lines
+
+conf t
+no ip access-list extended FP3
+ip access-list extended FP3
+permit tcp any host bet10.com eq 53
+permit tcp any host bet10.com eq 443
+permit tcp any host bet10.com eq 2000
+permit tcp any host bet10.com eq 5060
+permit tcp any host bet11.com eq 22
+permit tcp any host bet11.com eq 80
+permit tcp any host bet11.com eq 1720
+permit tcp any host bet11.com eq 5061
+int gi 3
+ip access-group FP3 in
+end
+
+
+TASK 4: CREATE YOUR OWN FIREWALL POLICY:
+Create a  firewall policy: FP4 conditions:
+bet10.com open http,https
+bet11.com open ssh,dns,sip
+
+conf t
+no ip access-list extended FP4
+ip access-list extended FP4
+permit tcp any host bet10.com eq 80
+permit tcp any host bet10.com eq 443
+permit tcp any host bet11.com eq 22
+permit tcp any host bet11.com eq 53
+permit tcp any host bet11.com eq 5060
+int gi 3
+ip access-group FP4 in
+end
+
+
+
+
+
+
+
+
+PROXY OR PAT: PORT ADDRESS TRANSLATION:
+config t
+no access-list 8
+access-list 8 permit any
+Int Gi 3
+ ip nat Inside
+Int gi 1
+ ip nat Outside
+IP Nat inside source static tcp 192.168.103.21 80 208.8.8.51 80
+IP Nat inside source static tcp 192.168.103.21 443 208.8.8.51 443
+IP Nat inside source static tcp 192.168.103.22 80 208.8.8.51 8080
+IP Nat inside source static tcp 192.168.103.23 443 208.8.8.51 8443
+IP nat inside source list 8 int gi 1 Overload
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
